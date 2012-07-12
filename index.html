@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>CampFireManager</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="Media/JQM/jquery.mobile-1.1.0.min.css">
+		<link rel="stylesheet" href="Media/JQM/docs/_assets/css/jqm-docs.css">
+		<script src="Media/JQM/jquery-1.7.1.min.js"></script>
+		<script src="Media/JQM/jquery.mobile-1.1.0.min.js"></script>
+		<script src="Media/CampFireManager.js"></script>
+	</head>
+	<body>
+		<div data-role="page" id="timetable">
+			<div data-role="header">
+				<a href="#" data-icon="refresh">Refresh</a>
+				<h1>Campfire Manager</h1>
+				<a href="#login" data-rel="dialog" data-icon="gear">Login</a>
+			</div>
+			<div data-role="content">
+				<ul id="thegrid" data-theme="d" data-divider-theme="d">
+				</ul>
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="timetable" class="ui-btn-active ui-state-persist" data-icon="grid">The Grid</a></li>
+						<li><a href="#"data-icon="star">I'm attending</a></li>
+						<li><a href="user"data-icon="arrow-r">My Profile</a></li>
+					</ul>
+				</div>
+			</div>		
+		</div>
+	</body>
+</html>
