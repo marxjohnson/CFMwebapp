@@ -38,7 +38,24 @@ function initCFM() {
 			listdata+='</li>';
 			var c = 0;
 			$.each(session, function (k, t) {
-				if (!(!!t.strTalkTitle)) {
+				if (!!t.strTalkTitle) {
+					listdata+='<li>';
+					if (!!t.arrUser) {
+						listdata+='<a href="talk.html">';
+					}					
+					listdata+='<h3>'+t.strTalkTitle+'</h3>';
+					listdata+=( (!!t.arrUser) ? '<p><strong>'+t.arrUser.strUserName+'</strong></p>' : "" );
+					listdata+='<p>'+t.strTalkSummary+'</p>';
+					if (!!t.arrUser) {
+					listdata+='<span class="ui-li-count">'+t.intAttendees+' / '+' Attendees</span>';
+					}
+					listdata+='<p class="ui-li-aside">'+'</p>';
+					if (!!t.arrUser) {
+						listdata+='</a>';
+					}
+					listdata+='</li>';
+					
+				} else {
 					if (c<1) {
 						listdata+='<li data-theme="a"><a href="talk.html">';
 						listdata+='<h3>Empty</h3>';
@@ -47,14 +64,6 @@ function initCFM() {
 						listdata+='</a>';
 						c++;
 					}
-				} else {
-					listdata+='<li><a href="talk.html">';
-					listdata+='<h3>'+t.strTalkTitle+'</h3>';
-					listdata+=( (!!t.arrUser) ? '<p><strong>'+t.arrUser.strUserName+'</strong></p>' : "" );
-					listdata+='<p>'+t.strTalkSummary+'</p>';
-					listdata+='<span class="ui-li-count">'+t.intAttendees+' / '+' Attendees</span>';
-					listdata+='<p class="ui-li-aside">'+'</p>';
-					listdata+='</a></li>';
 				}
 			});
 		});
