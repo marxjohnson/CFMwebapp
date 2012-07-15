@@ -30,43 +30,59 @@ function initCFM() {
 		}			
 		var listdata = "";	
 		$.mobile.showPageLoadingMsg();
-		$.each(window.campfireData.Collection_Timetable[0].arrTimetable, function (key, session) {
-			listdata+='<li data-role="list-divider">';
-			listdata+=eval("campfireData.Collection_Timetable[0].arrSlots."+key+".timeStart");
-			listdata+=' - ';
-			listdata+=eval("campfireData.Collection_Timetable[0].arrSlots."+key+".timeEnd");
-			listdata+='</li>';
-			var c = 0;
-			$.each(session, function (k, t) {
-				if (!!t.strTalkTitle) {
-					listdata+='<li>';
-					if (!!t.arrUser) {
-						listdata+='<a href="talk.html">';
-					}					
-					listdata+='<h3>'+t.strTalkTitle+'</h3>';
-					listdata+=( (!!t.arrUser) ? '<p><strong>'+t.arrUser.strUserName+'</strong></p>' : "" );
-					listdata+='<p>'+t.strTalkSummary+'</p>';
-					if (!!t.arrUser) {
-					listdata+='<span class="ui-li-count">'+t.intAttendees+' / '+' Attendees</span>';
-					}
-					listdata+='<p class="ui-li-aside">'+'</p>';
-					if (!!t.arrUser) {
-						listdata+='</a>';
-					}
-					listdata+='</li>';
-					
-				} else {
-					if (c<1) {
-						listdata+='<li data-theme="a"><a href="talk.html">';
-						listdata+='<h3>Empty</h3>';
-						listdata+='<p><strong>Click to arrange a talk here!</strong></p>';
-						listdata+='<p class="ui-li-aside">'+'</p>';
-						listdata+='</a>';
-						c++;
-					}
-				}
-			});
-		});
+                $.each(window.campfireData.Collection_Timetable, function (intTimetableID, arrTimetableData) {
+                    $.each(arrTimetableData.arrTimetable, function (key, session) {
+                            listdata+='<li data-role="list-divider">';
+                            listdata+=eval("arrTimetableData.arrSlots."+key+".timeStart");
+                            listdata+=' - ';
+                            listdata+=eval("arrTimetableData.arrSlots."+key+".timeEnd");
+                            listdata+='</li>';
+                            var c = 0;
+                            $.each(session, function (k, t) {
+                                    if (!!t.intUserID) {
+                                            listdata+='<li>';
+                                            listdata+='<a href="talk.html">';
+                                            listdata+='<h3>'+t.strTalkTitle+'</h3>';
+                                            if (!!t.intUserID) {
+                                                listdata+='<p>';
+                                                $.each(t.arrPresenters, function (intPresenterID, arrPresenter) {
+                                                    listdata+='<strong>'+arrPresenter.strName+'</strong>';
+                                                });
+                                                listdata+='</p>';
+                                            }
+
+                                            listdata+='<p>'+t.strTalkSummary+'</p>';
+                                            listdata+='<span class="ui-li-count">'+t.intAttendees+' / '+' Attendees</span>';
+                                            listdata+='<p class="ui-li-aside">'+'</p>';
+                                            listdata+='</a>';
+                                            listdata+='</li>';
+                                    } else {
+                                            if (c<1) {
+                                                    if (t.isLocked === 'hardlock') {
+                                                        listdata+='<li data-theme="a">';
+                                                        listdata+='<h3>All other rooms in this slot unavailable due to: '+t.strTalkTitle+'</h3>';
+                                                        listdata+='</li>';
+                                                    }
+                                                    if (t.isLocked === 'softlock') {
+                                                        listdata+='<li data-theme="a"><a href="talk.html">';
+                                                        listdata+='<h3>Empty during: '+t.strTalkTitle+'</h3>';
+                                                        listdata+='<p><strong>Click to arrange a talk here!</strong></p>';
+                                                        listdata+='<p class="ui-li-aside">'+'</p>';
+                                                        listdata+='</a></li>';
+                                                    }
+                                                    if (t.strTalkTitle === '') {
+                                                        listdata+='<li data-theme="a"><a href="talk.html">';
+                                                        listdata+='<h3>Empty</h3>';
+                                                        listdata+='<p><strong>Click to arrange a talk here!</strong></p>';
+                                                        listdata+='<p class="ui-li-aside">'+'</p>';
+                                                        listdata+='</a></li>';
+                                                    }
+                                                    c++;
+                                            }
+                                    }
+                            });
+                    });
+                });
 		document.getElementById("thegrid").innerHTML=listdata;
 		$( "#thegrid" ).listview();
 		$.mobile.hidePageLoadingMsg();
