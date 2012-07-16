@@ -1,38 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>CampFireManager</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="Media/JQM/jquery.mobile-1.1.0.min.css">
-		<link rel="stylesheet" href="Media/JQM/docs/_assets/css/jqm-docs.css">
-		<script src="Media/JQM/jquery-1.7.1.min.js"></script>
-		<script src="Media/JQM/jquery.mobile-1.1.0.min.js"></script>
-		<script src="Media/CampFireManager.js"></script>
-	</head>
-	<body>
-		<div data-role="page" id="home">
-			<div data-theme="a" data-role="header" data-position="fixed">
-				<h3>Start the Fire</h3>
-			</div>
-			<div data-role="content" style="padding: 15px">
-				<div data-role="fieldcontain">
-					<label for="baseurl">CampFireManager Base URL:</label>
-					<input id="baseurl" value="http://cfm.awesomebarcamp.net/" type="url" />
-				</div>
-				<div data-role="fieldcontain">
-					<fieldset data-role="controlgroup" data-type="vertical">
-						<legend>Save the CampFireManager URL:</legend>
-						<label for="remember">Remember for next time</label>
-						<input name="remember" id="remember" type="checkbox" checked="checked" class="custom" />
-					</fieldset>
-				</div>
-				<div class="ui-grid-a">
-					<div class="ui-block-a"></div>
-					<div class="ui-block-b">
-						<a data-role="button" data-transition="fade" href="#" onclick="checkBase()">Go!</a>
-					</div>
-				</div>
-			</div>
-		</div>
- 	</body>
+    <head>
+        <title>CampFireManager</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="Media/JQM/jquery.mobile-1.1.0.min.css">
+        <script src="Media/JQM/jquery-1.7.1.min.js"></script>
+        <script src="Media/JQM/jquery.mobile-1.1.0.min.js"></script>
+        <script src="Media/CampFireManager.js"></script>
+    </head>
+    <body>
+        <div data-role="page" id="home">
+            <div data-theme="a" data-role="header" data-position="fixed">
+                <h3>Start the Fire</h3>
+            </div>
+            <div data-role="content" style="padding: 15px">
+                <div data-role="fieldcontain">
+                    <label for="baseurl">CampFireManager Base URL:</label>
+                    <input id="baseurl" type="url" />
+                </div>
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical">
+                        <legend>Save the CampFireManager URL:</legend>
+                        <label for="remember">Remember for next time</label>
+                        <input id="remember" type="checkbox" checked="checked" class="custom" />
+                    </fieldset>
+                </div>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a"></div>
+                    <div class="ui-block-b">
+                        <a data-role="button" href="#" onclick="pollCFM()">Go!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
