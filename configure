@@ -1,0 +1,7 @@
+#!/bin/bash
+
+wget http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.zip -O Media/JQM.zip
+unzip Media/JQM.zip -d Media
+rm Media/JQM.zip
+mv Media/jquery.mobile-1.1.1 Media/JQM
+wget http://code.jquery.com/jquery-1.7.1.min.js -O Media/JQM/jquery-1.7.1.min.js

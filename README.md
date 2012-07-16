@@ -18,7 +18,6 @@ These things are going to be added in due course:
 These things are known issues:
 
  - If attendee numbers for talks aren't set it writes "undefined" instead of 0
- - Opening + closing events show up in all rooms, instead of one particular room (This is really a backend thing, but oh well!)
  - The room name isn't displayed
  - The system doesn't do anything useful...
 
@@ -30,8 +29,4 @@ The plan looks something like this:
  2 Use PhoneGap (http://phonegap.com) to port the webapp to native apps
  3 Win!
 
-You need to have JQueryMobile in the folder Media/JQM/ or things will be sad :( The system is built on JQM 1.10, so use that unless you're confident or have a lot of Javascript-fu
-
-Also, there is one CSS file which isn't in the JQM archive, you can get it from 
-http://jquerymobile.com/demos/1.1.0/docs/_assets/css/jqm-docs.css
-and save it to Media/JQM/docs/_assets/css/jqm-docs.css
+Installation is now much easier, simply cd into this folder and run ./configure to download all dependencies :)
