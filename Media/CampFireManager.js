@@ -92,6 +92,7 @@ function renderTalk(k, t, c) {
                     talkdata+='</a>';
                     break;
             }
+            talkdata+='</li>';
         }
         c++;
     }
