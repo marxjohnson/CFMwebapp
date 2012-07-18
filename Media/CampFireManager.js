@@ -1,99 +1,121 @@
-/* CampfireManager (Web)App Javascript */
-/* Written by Jack Wearden for CampfireManager V2 */
-/* Code released as open source under GNU AGPL v3 */
-
-/* Don't blame me if this code takes your cake!!! */
-
-// function initCFM is executed upon the page loading.
-// Called by: All page loads (1st time, *not* Jquerymobile page loads as these manipulate the DOM) 
-// Purpose: Checks that CFM has been 'set up' - IE a base URL has been registered
 function initCFM() {
-	if (document.getElementById("thegrid")) {
-		if (!localStorage.getItem('CFM')) {
-			if (!!localStorage.getItem('baseURL')) {
-				$.mobile.showPageLoadingMsg();
-				window.campfireData = parseJSON($.ajax({
-				    type: 'GET',
-				    url: localStorage.getItem('baseURL')+"rest/timetable",
-				    dataType: 'json',
-				    success: function() { },
-				    data: {},
-				    async: false
-				}).responseText);
-				localStorage.setItem('CFM',JSON.stringify(campfireData));
-				$.mobile.hidePageLoadingMsg();
-			} else {
-				window.location = "home.html";
-			}
-		} else {
-			window.campfireData = parseJSON(localStorage.getItem('CFM'));
-		}			
-		var listdata = "";	
-		$.mobile.showPageLoadingMsg();
-                $.each(window.campfireData.Collection_Timetable, function (intTimetableID, arrTimetableData) {
-                    $.each(arrTimetableData.arrTimetable, function (key, session) {
-                            listdata+='<li data-role="list-divider">';
-                            listdata+=eval("arrTimetableData.arrSlots."+key+".timeStart");
-                            listdata+=' - ';
-                            listdata+=eval("arrTimetableData.arrSlots."+key+".timeEnd");
-                            listdata+='</li>';
-                            var c = 0;
-                            $.each(session, function (k, t) {
-                                    if (!!t.intUserID) {
-                                            listdata+='<li>';
-                                            listdata+='<a href="talk.html">';
-                                            listdata+='<h3>'+t.strTalkTitle+'</h3>';
-                                            if (!!t.intUserID) {
-                                                listdata+='<p>';
-                                                $.each(t.arrPresenters, function (intPresenterID, arrPresenter) {
-                                                    listdata+='<strong>'+arrPresenter.strName+'</strong>';
-                                                });
-                                                listdata+='</p>';
-                                            }
-
-                                            listdata+='<p>'+t.strTalkSummary+'</p>';
-                                            listdata+='<span class="ui-li-count">'+t.intAttendees+' / '+' Attendees</span>';
-                                            listdata+='<p class="ui-li-aside">'+'</p>';
-                                            listdata+='</a>';
-                                            listdata+='</li>';
-                                    } else {
-                                            if (c<1) {
-                                                    if (t.isLocked === 'hardlock') {
-                                                        listdata+='<li data-theme="a">';
-                                                        listdata+='<h3>All other rooms in this slot unavailable due to: '+t.strTalkTitle+'</h3>';
-                                                        listdata+='</li>';
-                                                    }
-                                                    if (t.isLocked === 'softlock') {
-                                                        listdata+='<li data-theme="a"><a href="talk.html">';
-                                                        listdata+='<h3>Empty during: '+t.strTalkTitle+'</h3>';
-                                                        listdata+='<p><strong>Click to arrange a talk here!</strong></p>';
-                                                        listdata+='<p class="ui-li-aside">'+'</p>';
-                                                        listdata+='</a></li>';
-                                                    }
-                                                    if (t.strTalkTitle === '') {
-                                                        listdata+='<li data-theme="a"><a href="talk.html">';
-                                                        listdata+='<h3>Empty</h3>';
-                                                        listdata+='<p><strong>Click to arrange a talk here!</strong></p>';
-                                                        listdata+='<p class="ui-li-aside">'+'</p>';
-                                                        listdata+='</a></li>';
-                                                    }
-                                                    c++;
-                                            }
-                                    }
-                            });
-                    });
-                });
-		document.getElementById("thegrid").innerHTML=listdata;
-		$( "#thegrid" ).listview();
-		$.mobile.hidePageLoadingMsg();
-	}
+    switch($('#pageIdentifier')[0].getAttribute('page')) {
+        case 'thegrid':
+            initTheGrid();
+            break;
+        case 'home':
+            initHome();
+            break;
+    }
 }
 window.onload=initCFM;
 
+function initTheGrid() {
+    if (!localStorage.getItem('CFM')) {
+        // Timetable isn't held locally, CFM not configured
+        window.location = 'home.html';
+    } else {
+        // Timetable held, parse it
+        drawTheGrid();
+    }
+}
 
-function checkBase() {
-	localStorage.baseURL=document.getElementById('baseurl').value;
-	window.location="index.html";
+function drawTheGrid() {
+    campfireData = parseJSON(localStorage.getItem('CFM'));
+    gridHTML = renderListView(campfireData);
+    $('#thegrid').html(gridHTML);
+    $('#thegrid').listview();
+}
+
+function renderListView(CFM) {
+    var list = "";
+    $.each(CFM.Collection_Timetable, function(intTimetableID, arrTimetableData){
+        list+=renderSession(intTimetableID, arrTimetableData);
+    });
+    return list;
+}
+
+function renderSession(intTimetableID, arrTimetableData) {
+    var list = "";
+    $.each(arrTimetableData.arrTimetable, function (key, session) {
+        list+='<li data-role="list-divider">';
+        list+=eval("arrTimetableData.arrSlots."+key+".timeStart");
+        list+=' - ';
+        list+=eval("arrTimetableData.arrSlots."+key+".timeEnd");
+        list+='</li>';
+        var c = 0;
+        $.each(session, function (key, talk) {
+            var r = renderTalk(key, talk, c);
+            list+=r[0];
+            c=r[1];
+        });
+    });
+    return list;
+}
+
+function renderTalk(k, t, c) {
+    var talkdata = "";
+    if (!!t.intUserID) {
+        talkdata+='<li><a href="talk.html"><h3>'+t.strTalkTitle+'</h3>';
+        if (!!t.intUserID) {
+            talkdata+='<p>';
+            $.each(t.arrPresenters, function (intPresenterID, arrPresenter) {
+                talkdata+='<strong>'+arrPresenter.strName+'</strong>';
+            });
+            talkdata+='</p>';
+        }
+
+        talkdata+='<p>'+t.strTalkSummary+'</p>';
+        talkdata+='<span class="ui-li-count">'+t.intAttendees;
+        talkdata+=' / '+t.arrRoom.intCapacity+' Attendees</span>';
+        talkdata+='<p class="ui-li-aside">'+'</p>';
+        talkdata+='</a></li>';
+    } else {
+        if (c<1) {
+            talkdata+='<li data-theme="a">';
+            switch (t.isLocked) {
+                case 'hardlock':
+                    talkdata+='<h3>All other rooms in this slot unavailable due to: '+t.strTalkTitle+'</h3>';
+                    break;
+                case 'softlock':
+                    talkdata+='<a href="talk.html">';
+                    talkdata+='<h3>Empty during: '+t.strTalkTitle+'</h3>';
+                    talkdata+='<p><strong>Click to arrange a talk here!</strong></p>';
+                    talkdata+='<p class="ui-li-aside">'+'</p>';
+                    talkdata+='</a>';
+                    break;
+                default:
+                    talkdata+='<a href="talk.html">';
+                    talkdata+='<h3>Empty</h3>';
+                    talkdata+='<p><strong>Click to arrange a talk here!</strong></p>';
+                    talkdata+='<p class="ui-li-aside">'+'</p>';
+                    talkdata+='</a>';
+                    break;
+            }
+        }
+        c++;
+    }
+    return [talkdata, c];
+}
+
+function initHome() {
+    $('#baseurl').val(location.protocol+"//"+location.hostname+"/cfm2/");
+}
+
+function tryConfig() {
+    $.mobile.showPageLoadingMsg()
+    $('#baseurl').val($('#baseurl').val().replace(/\/?$/, '/'));
+    $.ajax({
+        type: 'GET',
+        url: $('#baseurl').val()+"rest/timetable",
+        dataType: 'json',
+        cache: false,
+        success: function(campfireData) {
+            localStorage.setItem('CFM', JSON.stringify(campfireData));
+            location="index.html";
+        }
+    });
+    $.mobile.hidePageLoadingMsg();
 }
 
 function parseJSON(json) {
@@ -110,5 +132,3 @@ function parseJSON(json) {
 		});
 	/** end of "recycled" code **/
 }
-// function getGrid pulls the JSON data from the CFM backend
-// Called: when the grid has not previously been gotten or when user clicks refresh
