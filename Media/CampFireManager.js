@@ -56,11 +56,11 @@ function renderSession(intTimetableID, arrTimetableData) {
 function renderTalk(k, t, c) {
     var talkdata = "";
     if (!!t.intUserID) {
-        talkdata+='<li><a href="talk.html"><h3>'+t.strTalkTitle+'</h3>';
+        talkdata+='<li><a href="talk.html"><h3>'+t.strTalk+'</h3>';
         if (!!t.intUserID) {
             talkdata+='<p>';
             $.each(t.arrPresenters, function (intPresenterID, arrPresenter) {
-                talkdata+='<strong>'+arrPresenter.strName+'</strong>';
+                talkdata+='<strong>'+arrPresenter.strUser+'</strong>';
             });
             talkdata+='</p>';
         }
@@ -79,7 +79,7 @@ function renderTalk(k, t, c) {
                     break;
                 case 'softlock':
                     talkdata+='<a href="talk.html">';
-                    talkdata+='<h3>Empty during: '+t.strTalkTitle+'</h3>';
+                    talkdata+='<h3>Empty during: '+t.strTalk+'</h3>';
                     talkdata+='<p><strong>Click to arrange a talk here!</strong></p>';
                     talkdata+='<p class="ui-li-aside">'+'</p>';
                     talkdata+='</a>';
